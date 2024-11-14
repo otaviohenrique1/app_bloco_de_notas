@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native';
-import Container from '../components/Container';
+import { StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import { Container } from "../components/Container";
 import { Appbar, FAB } from 'react-native-paper';
 import { FlatGrid } from 'react-native-super-grid';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -21,7 +21,7 @@ export default function HomePage({ navigation }: Props) {
   useEffect(() => {
     buscaTodos();
   }, [notas])
-  
+
 
   const data = [
     { name: 'TURQUOISE', code: '#1abc9c' },
@@ -46,10 +46,13 @@ export default function HomePage({ navigation }: Props) {
     { name: 'ASBESTOS', code: '#7f8c8d' },
   ];
 
+  function limitarTamanhoString(str: string, maxLength: number): string {
+    return str.length > maxLength ? str.slice(0, maxLength) + '...' : str;
+  }
+
   return (
     <Container>
       <Appbar.Header style={{ backgroundColor: "cadetblue" }}>
-        {/* <Appbar.BackAction onPress={() => { }} /> */}
         <Appbar.Content title="HomePage" />
       </Appbar.Header>
       <FlatGrid
@@ -60,10 +63,15 @@ export default function HomePage({ navigation }: Props) {
         // fixed
         spacing={10}
         renderItem={({ item }) => (
-          <View style={[styles.itemContainer, { backgroundColor: "#bdc3c7" }]}>
-            <Text style={styles.itemName}>{item.titulo}</Text>
-            <Text style={styles.itemCode}>{item.conteudo}</Text>
-          </View>
+          <TouchableHighlight
+            style={{ borderRadius: 5 }}
+            onPress={() => navigation.push("Detalhes", { id: item.id })}
+          >
+            <View style={styles.itemContainer}>
+              <Text style={styles.itemTitulo}>{limitarTamanhoString(item.titulo, 10)}</Text>
+              <Text style={styles.itemConteudo}>{limitarTamanhoString(item.conteudo, 100)}</Text>
+            </View>
+          </TouchableHighlight>
         )}
       />
       <FAB
@@ -87,19 +95,21 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   itemContainer: {
-    justifyContent: 'flex-end',
+    // justifyContent: 'flex-end',
+    backgroundColor: "#bdc3c7",
     borderRadius: 5,
     padding: 10,
     height: 150,
   },
-  itemName: {
-    fontSize: 16,
-    color: '#fff',
+  itemTitulo: {
+    fontSize: 20,
+    // color: '#000',
     fontWeight: '600',
   },
-  itemCode: {
+  itemConteudo: {
+    marginTop: 10,
     fontWeight: '600',
     fontSize: 12,
-    color: '#fff',
+    // color: '#000',
   },
 });
