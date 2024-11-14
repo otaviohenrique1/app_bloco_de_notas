@@ -2,7 +2,6 @@ import { type SQLiteDatabase } from "expo-sqlite"
 
 export async function initializeDatabase(database: SQLiteDatabase) {
   await database.execAsync(`
-    DROP TABLE notas;
     CREATE TABLE IF NOT EXISTS notas (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       titulo TEXT NOT NULL,
@@ -10,4 +9,5 @@ export async function initializeDatabase(database: SQLiteDatabase) {
       data_criacao TEXT NOT NULL
     );
   `);
+  // DROP TABLE notas;
 }

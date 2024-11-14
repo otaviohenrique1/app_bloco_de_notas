@@ -1,14 +1,28 @@
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import Container from '../components/Container';
 import { Appbar, FAB } from 'react-native-paper';
 import { FlatGrid } from 'react-native-super-grid';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from './routes';
+import { useEffect, useState } from 'react';
+import { NotasDatabase, useNotaDatabase } from '../database/useNotasDatabase';
 
 type Props = NativeStackScreenProps<RootStackParamList, "HomePage">;
 
 export default function HomePage({ navigation }: Props) {
+  const [notas, setNotas] = useState<NotasDatabase[]>([]);
+  const notaDatabase = useNotaDatabase();
+
+  async function buscaTodos() {
+    const resposta = await notaDatabase.listarTodos();
+    setNotas(resposta);
+  }
+
+  useEffect(() => {
+    buscaTodos();
+  }, [notas])
+  
+
   const data = [
     { name: 'TURQUOISE', code: '#1abc9c' },
     { name: 'EMERALD', code: '#2ecc71' },
@@ -40,15 +54,15 @@ export default function HomePage({ navigation }: Props) {
       </Appbar.Header>
       <FlatGrid
         itemDimension={130}
-        data={data}
+        data={notas}
         style={styles.gridView}
         // staticDimension={300}
         // fixed
         spacing={10}
         renderItem={({ item }) => (
-          <View style={[styles.itemContainer, { backgroundColor: item.code }]}>
-            <Text style={styles.itemName}>{item.name}</Text>
-            <Text style={styles.itemCode}>{item.code}</Text>
+          <View style={[styles.itemContainer, { backgroundColor: "#bdc3c7" }]}>
+            <Text style={styles.itemName}>{item.titulo}</Text>
+            <Text style={styles.itemCode}>{item.conteudo}</Text>
           </View>
         )}
       />

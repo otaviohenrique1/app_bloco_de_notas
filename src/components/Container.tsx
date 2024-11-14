@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
+import * as ScreenOrientation from 'expo-screen-orientation';
 
 interface ContainerProps {
   children: ReactNode;
@@ -8,6 +9,14 @@ interface ContainerProps {
 
 export default function Container(props: ContainerProps) {
   const { children } = props;
+
+  useEffect(() => {
+    const changeScreenOrientation = async () => {
+      await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.ALL);
+    };
+    changeScreenOrientation();
+  }, []);
+
   return (
     <View style={styles.container}>
       {children}
