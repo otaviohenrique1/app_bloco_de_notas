@@ -12,7 +12,7 @@ export function useNotaDatabase() {
 
   async function criar(data: Omit<NotasDatabase, "id">) {
     const statement = await database.prepareAsync(
-      "INSERT INTO notas (titulo, conteudo, data_criacao, ativo) VALUES ($titulo, $conteudo, $data_criacao)"
+      "INSERT INTO notas (titulo, conteudo, data_criacao) VALUES ($titulo, $conteudo, $data_criacao)"
     );
 
     try {
