@@ -1,18 +1,19 @@
 import { StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 import { Container } from "../components/Container";
-import { Appbar, FAB } from 'react-native-paper';
+import { Appbar, FAB, IconButton, Menu } from 'react-native-paper';
 import { FlatGrid } from 'react-native-super-grid';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from './routes';
 import { useEffect, useState } from 'react';
 import { NotasDatabase, useNotaDatabase } from '../database/useNotasDatabase';
+import { ItemListaGrid } from '../components/ItemListaGrid';
 
 type Props = NativeStackScreenProps<RootStackParamList, "HomePage">;
 
 export default function HomePage({ navigation }: Props) {
   const [notas, setNotas] = useState<NotasDatabase[]>([]);
   const notaDatabase = useNotaDatabase();
-
+  
   async function buscaTodos() {
     const resposta = await notaDatabase.listarTodos();
     setNotas(resposta);
@@ -46,9 +47,7 @@ export default function HomePage({ navigation }: Props) {
     { name: 'ASBESTOS', code: '#7f8c8d' },
   ];
 
-  function limitarTamanhoString(str: string, maxLength: number): string {
-    return str.length > maxLength ? str.slice(0, maxLength) + '...' : str;
-  }
+  
 
   return (
     <Container>
@@ -63,15 +62,10 @@ export default function HomePage({ navigation }: Props) {
         // fixed
         spacing={10}
         renderItem={({ item }) => (
-          <TouchableHighlight
-            style={{ borderRadius: 5 }}
-            onPress={() => navigation.push("Detalhes", { id: item.id })}
-          >
-            <View style={styles.itemContainer}>
-              <Text style={styles.itemTitulo}>{limitarTamanhoString(item.titulo, 10)}</Text>
-              <Text style={styles.itemConteudo}>{limitarTamanhoString(item.conteudo, 100)}</Text>
-            </View>
-          </TouchableHighlight>
+          <ItemListaGrid
+            data={item}
+            navigation={navigation}
+          />
         )}
       />
       <FAB
@@ -93,23 +87,5 @@ const styles = StyleSheet.create({
   gridView: {
     marginTop: 10,
     flex: 1,
-  },
-  itemContainer: {
-    // justifyContent: 'flex-end',
-    backgroundColor: "#bdc3c7",
-    borderRadius: 5,
-    padding: 10,
-    height: 150,
-  },
-  itemTitulo: {
-    fontSize: 20,
-    // color: '#000',
-    fontWeight: '600',
-  },
-  itemConteudo: {
-    marginTop: 10,
-    fontWeight: '600',
-    fontSize: 12,
-    // color: '#000',
   },
 });

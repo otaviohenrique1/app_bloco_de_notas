@@ -6,14 +6,26 @@ import { RootStackParamList } from "./routes";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { CampoTexto } from "../components/CampoTexto";
-import { format } from "date-fns";
-import { useNotaDatabase } from "../database/useNotasDatabase";
-import { schema, valoresIniciais } from "../utils/constantes";
+import { NotasDatabase, useNotaDatabase } from "../database/useNotasDatabase";
+import { useEffect, useState } from "react";
+import { dadosIniciais, schema, valoresIniciais } from "../utils/constantes";
 
-type Props = NativeStackScreenProps<RootStackParamList, "Formulario">;
+type Props = NativeStackScreenProps<RootStackParamList, "FormularioEditar">;
 
-export default function Formulario({ navigation }: Props) {
+export default function FormularioEditar({ navigation, route }: Props) {
+  const [nota, setNota] = useState<NotasDatabase>(dadosIniciais);
   const notaDatabase = useNotaDatabase();
+
+  const { id } = route.params;
+
+  const buscaUmaTarefa = async () => {
+    const data = await notaDatabase.listarUm(id);
+    setNota((data !== null) ? data : dadosIniciais);
+  };
+
+  useEffect(() => {
+    buscaUmaTarefa();
+  }, [nota])
 
   const {
     control,
@@ -23,23 +35,26 @@ export default function Formulario({ navigation }: Props) {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: valoresIniciais,
+    values: {
+      titulo: nota.titulo,
+      conteudo: nota.conteudo,
+    }
   })
 
   return (
     <Container>
       <Appbar.Header style={{ backgroundColor: "cadetblue" }}>
         <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="Formulario" />
+        <Appbar.Content title="Editar" />
         <Appbar.Action icon="close" onPress={reset} />
         <Appbar.Action icon="check" onPress={handleSubmit(async (values) => {
           try {
-            const data = format(new Date(), "MM/dd/yyyy HH:mm");
-            const resposta = await notaDatabase.criar({
+            await notaDatabase.atualizar({
+              id: id,
               titulo: values.titulo,
               conteudo: values.conteudo,
-              data_criacao: data,
+              data_criacao: nota.data_criacao,
             });
-            console.log(resposta.insertedRowId);
             reset();
             navigation.goBack();
           } catch (error) {
