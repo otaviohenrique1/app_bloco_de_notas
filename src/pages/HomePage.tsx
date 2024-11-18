@@ -47,8 +47,6 @@ export default function HomePage({ navigation }: Props) {
     { name: 'ASBESTOS', code: '#7f8c8d' },
   ];
 
-  
-
   return (
     <Container>
       <Appbar.Header style={{ backgroundColor: "cadetblue" }}>
