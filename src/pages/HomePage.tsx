@@ -1,6 +1,6 @@
-import { StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Container } from "../components/Container";
-import { Appbar, FAB, IconButton, Menu } from 'react-native-paper';
+import { Appbar, FAB } from 'react-native-paper';
 import { FlatGrid } from 'react-native-super-grid';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from './routes';
